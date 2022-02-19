@@ -30,7 +30,7 @@ source env/Scripts/activate
 ### Install Python 3 Libraries
 After installing `Python 3` and activating your workspace, you need to download the libraries
 
-Download and Install the libraries
+Download and Install the libraries `xlrd` and `xlwt`
 ```
 pip install -r requirements.txt
 ```
