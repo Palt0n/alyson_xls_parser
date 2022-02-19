@@ -3,6 +3,7 @@ import xlrd, xlwt
 import argparse
 import os
 import time
+import sys
 
 EXTENSION = ".xls"
 
@@ -44,9 +45,17 @@ def main():
     if os.path.exists(OUTPUT_FILENAME):
         print("Filename already exists, overriding {}".format(OUTPUT_FILENAME))
     write_alyson_xls(OUTPUT_FILENAME, list_expected_header, expected_sheet, list_all_file_row)
+    count_file = len(list_filepath_verified)
+    count_data = len(list_all_file_row)
+    count_total_file = len(list_filepath)
     print("Expected header: {}".format(list_expected_header))
     print("Expected sheet name: {}".format(expected_sheet))
+    print("Data: {}".format(count_data))
+    print("Files: {}/{} with {} skipped".format(count_file, count_total_file, count_skipped))
     print("Generated file: {}".format(OUTPUT_FILENAME))
+    print("Complete")
+    if count_skipped > 0:
+        sys.exit(1)
 
 
 def is_valid_path(parser, arg):
