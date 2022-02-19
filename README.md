@@ -1,69 +1,51 @@
 # alyson_xls_parser
-Reads and Writes .xls files
+Combines multiple small `.xls` files into a big `.xls` file
 
+## How to setup
+To setup this script, this requires you to:
+- Download this code to your PC
+- Install `python 3` 
+- Setup and activate your `python 3` workspace
+- Install `python 3` libraries `xlrd` and `xlwt`.
 
-Download the files:
-Two ways to download
-Using zip `Code > Download Zip`
-Using git
-```
-git clone https://github.com/Palt0n/alyson_xls_parser.git
-```
+### Download Script
+To download this code into your PC, github has a option for you to download as zip `Code > Download Zip`
 
-Install python libraries
-```
-pip install xlrd
-pip install xlwt
-```
+### Install Python 3
+- `Python 3` downloaded and installed from https://www.python.org/
 
-```
-pip install -r requirements.txt
-```
-
-To generate .xls file
-```
-python run_combine_xls.py example/data
-```
-To generate .xls file with name `out.xls`
-```
-python run_combine_xls.py example/data -o out.xls
-```
-
-## Setup
-### Workspace Creation 
-Navigate to new workspace folder
+### Setup and Activate workspace
+Navigate to your unzipped folder
 ```
 cd path/to/workspace
 ```
-
-### Download from Git
-```
-git clone https://github.com/Palt0n/kh-serverstats.git
-```
-
-### Setup python virtual environment with venv
-Create python virtual enviroment with venv
+Create the virutal env workspace
 ```
 python -m venv env
 ```
-To activate venv
+Activate the workspace
 ```
 source env/Scripts/activate
 ```
-To check if venv is activated
-```
-which python
-```
-- This command should return the path for python.
-- This path should be located in the local env folder
+### Install Python 3 Libraries
+After installing `Python 3` and activating your workspace, you need to download the libraries
 
-### Download external python libraries
-Ensure that venv is activated, then install the libararies using pip
+Download and Install the libraries `xlrd` and `xlwt`
 ```
 pip install -r requirements.txt
 ```
-Or run 
+
+
+## How to run
+Navigate to the location of the script
 ```
-pip install numpy
-pip install matplotlib
+cd path/to/workspace
+```
+To generate .xls file from all files located in `example/data`
+```
+env/Scripts/python run_combine_xls.py example/data
+```
+To generate .xls file with name `out.xls`
+```
+env/Scripts/python run_combine_xls.py example/data -o out.xls
 ```
