@@ -1,13 +1,12 @@
 #!env/Scripts/python
-import xlrd, xlwt
+import xlrd
+import xlwt
 import argparse
 import os
 import time
 import sys
 
 EXTENSION = ".xls"
-
-LIST_EXPECTED_HEADER = ['Type', 'Name', 'ID', 'Point X', 'Point Y', 'Length (µm)', 'Angle', 'Area', 'Perimeter']
 
 def generate_output_filename():
     timestr = time.strftime("%Y%m%d_%H%M%S")
