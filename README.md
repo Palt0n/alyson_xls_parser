@@ -43,9 +43,9 @@ cd path/to/workspace
 ```
 To generate .xls file from all files located in `example/data`
 ```
-env/Scripts/python run_combine_xls.py example/data
+python3 run_combine_xls.py example/data
 ```
 To generate .xls file with name `out.xls`
 ```
-env/Scripts/python run_combine_xls.py example/data -o out.xls
+python3run_combine_xls.py example/data -o out.xls
 ```
