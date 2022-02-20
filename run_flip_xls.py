@@ -1,0 +1,205 @@
+#!env/Scripts/python
+import xlrd
+import xlwt
+import argparse
+import os
+import time
+import sys
+
+EXTENSION = ".xls"
+LIST_HEADER = ["Type", "Name", "ID", "Point X", "Point Y", "Length (µm)", "Angle", "Area", "Perimeter"]
+LIST_COLUMN_INDEX_DATA = [
+    5, # Length (µm)
+    6, # Angle
+    7, # Area
+    8, # Perimeter
+]
+SHEET_NAME = "Measurement"
+
+def generate_output_filename():
+    """
+    Generates the default output filename
+    """
+    timestr = time.strftime("%Y%m%d_%H%M%S")
+    return timestr + EXTENSION
+
+def main():
+    parser = argparse.ArgumentParser(description='Combine .xls files with same header')
+    parser.add_argument(dest="search_path", help="input search path where all files are located", metavar="PATH", type=lambda x: is_valid_path(parser, x))
+    parser.add_argument("-o", "--output", dest="output_filename", help="out filename where all data will be created", default=generate_output_filename())
+    parser.add_argument("-m", "--multiple", dest="data_multiple", type=int, help="multiple of 3 ", default=generate_output_filename())
+    args = parser.parse_args()
+    PATH = args.search_path
+    OUTPUT_FILENAME = args.output_filename
+    DATA_MULTIPLE = args.data_multiple
+    print("Searching for all {} files in {}".format(EXTENSION, PATH))
+    list_filepath = find_all_files(PATH, EXTENSION)
+    # Verify files
+    list_filepath_verified = []
+    list_expected_header = LIST_HEADER
+    expected_sheet = SHEET_NAME
+    count_skipped = 0
+    for filepath in list_filepath:
+        bool_check, error_message, __, __ = check_alyson_xls(filepath, list_expected_header, expected_sheet)
+        if not bool_check:
+            print("Skipped {} ({})".format(filepath, error_message))
+            count_skipped += 1
+        else:
+            print("Found {}".format(filepath))
+            list_filepath_verified.append(filepath)
+    # Read files
+    list_all_file_row = []
+    for filepath in list_filepath_verified:
+        list_per_file_row = read_alyson_xls(filepath)
+        count_data = len(list_per_file_row)
+        print("Read {} - {} data".format(filepath, count_data))
+        assert count_data%DATA_MULTIPLE == 0, "{} does not have data with multiple {}, it has {} data".format(filepath, DATA_MULTIPLE, count_data)
+        list_new_per_file_row = modify_row(list_per_file_row, DATA_MULTIPLE)
+        list_all_file_row.extend(list_new_per_file_row)
+    # Write data to Main
+    if os.path.exists(OUTPUT_FILENAME):
+        print("Filename already exists, overriding {}".format(OUTPUT_FILENAME))
+    # Write data to Main
+    write_alyson_xls(OUTPUT_FILENAME, list_expected_header, expected_sheet, list_all_file_row)
+    count_file = len(list_filepath_verified)
+    count_data = len(list_all_file_row)
+    count_total_file = len(list_filepath)
+    print("Expected header: {}".format(list_expected_header))
+    print("Expected sheet name: {}".format(expected_sheet))
+    print("Data: {}".format(count_data))
+    print("Files: {}/{} with {} skipped".format(count_file, count_total_file, count_skipped))
+    print("Generated file: {}".format(OUTPUT_FILENAME))
+    print("Complete")
+    # Returns non zero exit code if skipped any files
+    if count_skipped > 0:
+        sys.exit(1)
+
+def modify_row(list_per_file_row, DATA_MULTIPLE):
+    """
+    Type           Name ID Point X    Point Y    Length (µm)    Angle    Area    Perimeter
+    Arbitrary Line      1                        280.6022371            
+    Arbitrary Line      2                        890.3655326            
+    Arbitrary Line      3                        908.2354239            
+    Arbitrary Line      4                        938.515015            
+
+    Type           Name ID Point X    Point Y    Length (µm) Angle       Area        Perimeter
+    Arbitrary Line      1                        280.6022371 890.3655326 908.2354239 938.515015            
+    """
+    row_index = 0
+    list_new_per_file_row = []
+    list_new_per_row_value = None
+    for list_per_row_value in list_per_file_row:
+        new_col_index = row_index%DATA_MULTIPLE
+        value = list_per_row_value[LIST_COLUMN_INDEX_DATA[0]]
+        if new_col_index == 0:
+            list_new_per_row_value = list_per_row_value
+            list_new_per_file_row.append(list_new_per_row_value)
+        else:
+            list_new_per_row_value[LIST_COLUMN_INDEX_DATA[new_col_index]] = value
+        row_index += 1
+    return list_new_per_file_row
+
+
+
+
+
+def is_valid_path(parser, arg):
+    """
+    Check if user input path exists
+    """
+    path = os.path.realpath(arg)
+    if not os.path.exists(path):
+        parser.error("The path {} does not exist!".format(path))
+    else:
+        return path
+
+def find_all_files(path, extension):
+    """
+    Returns list of all files in folder including its subfolders
+    Example of extension is .xls, .txt, .csv
+    """
+    list_filepath = []
+    for root, __, files in os.walk(path):
+        for file in files:
+            if file.endswith(extension):
+                list_filepath.append(os.path.join(root, file))
+    return list_filepath
+
+def check_alyson_xls(filepath, list_expected_header, expected_sheet):
+    """
+    Checks if the xls file:
+    Can be opened
+    Has the correct sheet name
+    Has same 1st row
+    """
+    error_message = ""
+    try:
+        loc = (filepath) 
+        wb = xlrd.open_workbook(loc)
+        if expected_sheet is None:
+            list_sheet_names = wb.sheet_names()
+            expected_sheet = list_sheet_names[0]
+    except:
+        error_message = "Cannot open file"
+        return False, error_message, list_expected_header, expected_sheet
+
+    try:
+        sheet = wb.sheet_by_name(expected_sheet)
+        sheet.cell_value(0, 0)
+    except:
+        error_message = "Cannot find sheet named: {}".format(expected_sheet)
+        return False, error_message, list_expected_header, expected_sheet
+
+    list_header = sheet.row_values(0)
+    if list_expected_header is not None:
+        if len(list_header) == len(list_expected_header):
+            count = 0
+            for header, EXPECTED_HEADER in zip(list_header, list_expected_header):
+                count += 1
+                # Check if each header value matches
+                if header != EXPECTED_HEADER:
+                    error_message = "1st Row, {} Column is not expected, expectation:{} vs reality:{}".format(count, EXPECTED_HEADER, header)
+                    return False, error_message, list_expected_header, expected_sheet
+            return True, None, list_expected_header, expected_sheet
+        else:
+            error_message = "1st Row is not expected, expectation:{} vs reality:{}".format(str(list_expected_header), str(list_header))
+            return False, error_message, list_expected_header, expected_sheet
+    else:
+        list_expected_header = list_header
+        # Always Return True for first file to obtain the list_expected_header
+        return True, None, list_expected_header, expected_sheet
+
+def read_alyson_xls(filepath):
+    """
+    Returns data from one xls
+    """
+    loc = (filepath) 
+    wb = xlrd.open_workbook(loc)
+    sheet = wb.sheet_by_index(0)
+    list_per_file_row = []
+    for row_idx in range(1, sheet.nrows):
+        list_per_row_value = sheet.row_values(row_idx)
+        list_per_file_row.append(list_per_row_value)
+    return list_per_file_row
+
+def write_alyson_xls(output_filename, list_expected_header, expected_sheet, list_all_file_row):
+    """
+    Writes all the rows into a file
+    """
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(expected_sheet)
+    index_column = 0
+    index_row = 0
+    for header in list_expected_header:
+        ws.write(index_row, index_column, header)
+        index_column += 1
+
+    index_row = 1
+    for list_per_row_value in list_all_file_row:
+        for index_column in range(0, len(list_per_row_value)):
+            ws.write(index_row, index_column, list_per_row_value[index_column])
+        index_row += 1
+    wb.save(output_filename)
+
+if __name__ == "__main__":
+    main()
