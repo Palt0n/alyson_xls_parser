@@ -21,7 +21,9 @@ pip3 install -r requirements.txt
 
 ## How to run
 Unzip the downloaded file `alyson_xls_parser-main.zip`
+
 Open a terminal
+
 Navigate to the location of the unzipped folder using the terminal
 ```
 cd path/to/alyson_xls_parser-main
