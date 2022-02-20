@@ -20,11 +20,11 @@ pip3 install -r requirements.txt
 ```
 
 ## How to run
-Unzip the downloaded file
+Unzip the downloaded file `alyson_xls_parser-main.zip`
 Open a terminal
-Navigate to the location of the unzipped folder
+Navigate to the location of the unzipped folder using the terminal
 ```
-cd path/to/workspace
+cd path/to/alyson_xls_parser-main
 ```
 To generate .xls file from all files located in `example/original/Tanks/Tank 1/7dph` with multiple `1` named `combined_7dph.xls`
 ```
