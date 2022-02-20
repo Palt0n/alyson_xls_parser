@@ -9,6 +9,9 @@ import sys
 EXTENSION = ".xls"
 
 def generate_output_filename():
+    """
+    Generates the default output filename
+    """
     timestr = time.strftime("%Y%m%d_%H%M%S")
     return timestr + EXTENSION
 
@@ -43,6 +46,7 @@ def main():
     # Write data to Main
     if os.path.exists(OUTPUT_FILENAME):
         print("Filename already exists, overriding {}".format(OUTPUT_FILENAME))
+    # Write data to Main
     write_alyson_xls(OUTPUT_FILENAME, list_expected_header, expected_sheet, list_all_file_row)
     count_file = len(list_filepath_verified)
     count_data = len(list_all_file_row)
@@ -53,6 +57,7 @@ def main():
     print("Files: {}/{} with {} skipped".format(count_file, count_total_file, count_skipped))
     print("Generated file: {}".format(OUTPUT_FILENAME))
     print("Complete")
+    # Returns non zero exit code if skipped any files
     if count_skipped > 0:
         sys.exit(1)
 
@@ -69,6 +74,7 @@ def is_valid_path(parser, arg):
 
 def find_all_files(path, extension):
     """
+    Returns list of all files in folder including its subfolders
     Example of extension is .xls, .txt, .csv
     """
     list_filepath = []
@@ -80,7 +86,10 @@ def find_all_files(path, extension):
 
 def check_alyson_xls(filepath, list_expected_header, expected_sheet):
     """
-    Checks if 1st row is the same
+    Checks if the xls file:
+    Can be opened
+    Has the correct sheet name
+    Has same 1st row
     """
     error_message = ""
     try:
@@ -133,6 +142,9 @@ def read_alyson_xls(filepath):
     return list_per_file_row
 
 def write_alyson_xls(output_filename, list_expected_header, expected_sheet, list_all_file_row):
+    """
+    Writes all the rows into a file
+    """
     wb = xlwt.Workbook()
     ws = wb.add_sheet(expected_sheet)
     index_column = 0
