@@ -14,30 +14,15 @@ To download this code into your PC, github has a option for you to download as z
 ### Install Python 3
 - `Python 3` downloaded and installed from https://www.python.org/
 
-### Setup and Activate workspace
-Navigate to your unzipped folder
-```
-cd path/to/workspace
-```
-Create the virutal env workspace
-```
-python -m venv env
-```
-Activate the workspace
-```
-source env/Scripts/activate
-```
-### Install Python 3 Libraries
-After installing `Python 3` and activating your workspace, you need to download the libraries
-
 Download and Install the libraries `xlrd` and `xlwt`
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-
 ## How to run
-Navigate to the location of the script
+Unzip the downloaded file
+Open a terminal
+Navigate to the location of the unzipped folder
 ```
 cd path/to/workspace
 ```
