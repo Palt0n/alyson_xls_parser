@@ -41,11 +41,46 @@ Navigate to the location of the script
 ```
 cd path/to/workspace
 ```
-To generate .xls file from all files located in `example/data`
+To generate .xls file from all files located in `example/original/Tanks/Tank 1/7dph` with multiple `1` named `combined_7dph.xls`
 ```
-python3 run_combine_xls.py "example/data"
+python3 run_flip_xls.py "example/original/Tanks/Tank 1/7dph" -m 1 -o "combined_7dph.xls"
 ```
-To generate .xls file with name `out.xls`
+To generate .xls file from all files located in `example/original/Tanks/Tank 1/13hpf` with multiple `4` named `combined_13hpf.xls`
 ```
-python3 run_combine_xls.py example/data -o out.xls
+python3 run_flip_xls.py "example/original/Tanks/Tank 1/13hpf" -m 4 -o "combined_13hpf.xls"
 ```
+To generate .xls file from all files located in `example/original/Tanks/Tank 1/7hph` with multiple `3` named `combined_7hph.xls`
+```
+python3 run_flip_xls.py "example/original/Tanks/Tank 1/7hph" -m 3 -o "combined_7hph.xls"
+```
+Expected output
+```
+User@DESKTOP-ITS12AU MINGW64 /c/Github/alyson_xls_parser (main)
+$ env/Scripts/python run_flip_xls.py "example/original/Tanks/Tank 1/7hph" -m 3 -o "combined_7hph.xls"
+Searching for all .xls files in C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\1.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\2.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\3.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\4.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\5.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\6.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\7.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\8.xls
+Found C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\9.xls
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\1.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\2.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\3.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\4.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\5.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\6.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\7.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\8.xls - 3 data
+Read C:\Github\alyson_xls_parser\example\original\Tanks\Tank 1\7hph\9.xls - 3 data
+Expected header: ['Type', 'Name', 'ID', 'Point X', 'Point Y', 'Length (µm)', 'Angle', 'Area', 'Perimeter']
+Expected sheet name: Measurement
+Data: 9
+Files: 9/9 with 0 skipped
+Generated file: combined_7hph.xls
+Complete
+```
+
